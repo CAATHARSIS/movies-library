@@ -1,4 +1,4 @@
-module go-movies-crud
+module github.com/CAATHARSIS/movies-library
 
 go 1.24.0
 
