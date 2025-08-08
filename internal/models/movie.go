@@ -7,7 +7,7 @@ type Movie struct {
 	Title string `json:"title"`
 	Director string `json:"director"`
 	ReleaseDate time.Time `json:"release_date"`
-	Gengre string `json:"gengre"`
+	Genre string `json:"genre"`
 	Description string `json:"description"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
