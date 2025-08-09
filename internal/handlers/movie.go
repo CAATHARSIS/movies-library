@@ -14,7 +14,7 @@ type MovieHandler struct {
 	service *service.MovieService
 }
 
-func NewMovieService(service service.MovieService) *MovieHandler {
+func NewMovieHandler(service service.MovieService) *MovieHandler {
 	return &MovieHandler{service: &service}
 }
 
@@ -23,6 +23,7 @@ func (h *MovieHandler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/movies/{id}", h.GetMovie).Methods("GET")
 	router.HandleFunc("/movies/{id}", h.UpdateMovie).Methods("PUT")
 	router.HandleFunc("/movies/{id}", h.DeleteMovie).Methods("DELETE")
+	router.HandleFunc("/movies", h.ListMovies).Methods("GET")
 }
 
 func (h *MovieHandler) CreateMovie(w http.ResponseWriter, r *http.Request) {
