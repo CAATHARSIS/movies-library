@@ -78,13 +78,14 @@ func (h *MovieHandler) UpdateMovie(w http.ResponseWriter, r *http.Request) {
 	}
 	movie.ID = id
 
-	if err := h.service.UpdateMovie(r.Context(), &movie); err != nil {
+	updatedMovie, err := h.service.UpdateMovie(r.Context(), &movie)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(movie)
+	json.NewEncoder(w).Encode(updatedMovie)
 }
 
 func (h *MovieHandler) DeleteMovie(w http.ResponseWriter, r *http.Request) {

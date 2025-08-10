@@ -23,7 +23,7 @@ func (s *MovieService) GetMovie(ctx context.Context, id int) (*models.Movie, err
 	return s.repo.GetByID(ctx, id)
 }
 
-func (s *MovieService) UpdateMovie(ctx context.Context, movie *models.Movie) error {
+func (s *MovieService) UpdateMovie(ctx context.Context, movie *models.Movie) (*models.Movie, error) {
 	return s.repo.Update(ctx, movie)
 }
 

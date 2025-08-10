@@ -75,14 +75,14 @@ func (r *MoviePostgresRepo) GetByID(ctx context.Context, id int) (*models.Movie,
 	var movie models.Movie
 
 	err := r.db.QueryRowContext(ctx, query, id).Scan(
-		movie.ID,
-		movie.Title,
-		movie.Director,
-		movie.ReleaseDate,
-		movie.Genre,
-		movie.Description,
-		movie.CreatedAt,
-		movie.UpdatedAt,
+		&movie.ID,
+		&movie.Title,
+		&movie.Director,
+		&movie.ReleaseDate,
+		&movie.Genre,
+		&movie.Description,
+		&movie.CreatedAt,
+		&movie.UpdatedAt,
 	)
 
 	if err != nil {
@@ -95,21 +95,31 @@ func (r *MoviePostgresRepo) GetByID(ctx context.Context, id int) (*models.Movie,
 	return &movie, nil
 }
 
-func (r *MoviePostgresRepo) Update(ctx context.Context, movie *models.Movie) error {
+func (r *MoviePostgresRepo) Update(ctx context.Context, movie *models.Movie) (*models.Movie, error) {
 	query := `
 		UPDATE
 			movies
 		SET title = $1,
 			director = $2,
 			release_date = $3,
-			gengre = $4,
+			genre = $4,
 			description = $5,
 			updated_at = $6
 		WHERE
 			id = $7
+		RETURNING
+			id,
+			title,
+			director,
+			release_date,
+			genre,
+			description,
+			created_at,
+			updated_at
 	`
 
-	_, err := r.db.ExecContext(
+	var updatedMovie models.Movie
+	err := r.db.QueryRowContext(
 		ctx,
 		query,
 		movie.Title,
@@ -119,13 +129,22 @@ func (r *MoviePostgresRepo) Update(ctx context.Context, movie *models.Movie) err
 		movie.Description,
 		movie.UpdatedAt,
 		movie.ID,
+	).Scan(
+		&updatedMovie.ID,
+		&updatedMovie.Title,
+		&updatedMovie.Director,
+		&updatedMovie.ReleaseDate,
+		&updatedMovie.Genre,
+		&updatedMovie.Description,
+		&updatedMovie.CreatedAt,
+		&updatedMovie.UpdatedAt,
 	)
 
 	if err != nil {
-		return fmt.Errorf("failed to update movie: %v", err)
+		return nil, fmt.Errorf("failed to update movie: %v", err)
 	}
 
-	return nil
+	return &updatedMovie, nil
 }
 
 func (r *MoviePostgresRepo) Delete(ctx context.Context, id int) error {

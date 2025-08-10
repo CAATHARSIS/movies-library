@@ -14,7 +14,9 @@ import (
 	"github.com/CAATHARSIS/movies-library/internal/repository/movie"
 	"github.com/CAATHARSIS/movies-library/internal/service"
 	"github.com/CAATHARSIS/movies-library/pkg/database"
+
 	"github.com/gorilla/mux"
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -50,10 +52,10 @@ func main() {
 		}
 	}()
 
-	<- done
+	<-done
 	log.Println("Server is shutting down...")
 
-	ctx, cancel :=  context.WithTimeout(context.Background(), 5 * time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	if err := srv.Shutdown(ctx); err != nil {
