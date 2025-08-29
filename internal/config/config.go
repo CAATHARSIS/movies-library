@@ -9,6 +9,7 @@ type Config struct {
 	DBPassword string
 	DBName     string
 	ServerPort string
+	Env        string
 }
 
 func Load() *Config {
@@ -19,6 +20,7 @@ func Load() *Config {
 		DBPassword: getEnv("DB_PASSWORD", "postgres"),
 		DBName:     getEnv("DB_NAME", "movie_library"),
 		ServerPort: getEnv("SERVER_PORT", "8080"),
+		Env:        getEnv("ENV", "local"),
 	}
 }
 

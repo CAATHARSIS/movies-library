@@ -127,7 +127,7 @@ func (r *MoviePostgresRepo) Update(ctx context.Context, movie *models.Movie) (*m
 		movie.ReleaseDate,
 		movie.Genre,
 		movie.Description,
-		movie.UpdatedAt,
+		time.Now(),
 		movie.ID,
 	).Scan(
 		&updatedMovie.ID,
@@ -198,7 +198,7 @@ func (r *MoviePostgresRepo) List(ctx context.Context) ([]*models.Movie, error) {
 			&movie.Title,
 			&movie.Director,
 			&movie.ReleaseDate,
-			&movie.Genre,
+			&movie.Genre,  
 			&movie.Description,
 			&movie.CreatedAt,
 			&movie.UpdatedAt,

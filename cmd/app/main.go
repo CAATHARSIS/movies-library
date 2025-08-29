@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
@@ -11,6 +11,8 @@ import (
 
 	"github.com/CAATHARSIS/movies-library/internal/config"
 	"github.com/CAATHARSIS/movies-library/internal/handlers"
+	"github.com/CAATHARSIS/movies-library/internal/logger"
+	"github.com/CAATHARSIS/movies-library/internal/middleware"
 	"github.com/CAATHARSIS/movies-library/internal/repository/movie"
 	"github.com/CAATHARSIS/movies-library/internal/service"
 	"github.com/CAATHARSIS/movies-library/pkg/database"
@@ -22,9 +24,16 @@ import (
 func main() {
 	cfg := config.Load()
 
+	log := logger.NewLogger(cfg.Env)
+
+	log.Info("starting movies-library", slog.String("env", cfg.Env))
+	if cfg.Env != "prod" {
+		log.Info("debug messages are enabled")
+	}
+
 	db, err := database.NewPostgresDB(cfg)
 	if err != nil {
-		log.Fatalf("Failed to connect to database: %v", err)
+		log.Error("Failed to connect to database", "error", err)
 	}
 	defer db.Close()
 
@@ -35,6 +44,7 @@ func main() {
 	movieHandler := handlers.NewMovieHandler(*movieService)
 
 	router := mux.NewRouter()
+	router.Use(middleware.NewLoggingMiddleware(log))
 	movieHandler.RegisterRoutes(router)
 
 	srv := &http.Server{
@@ -46,21 +56,23 @@ func main() {
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
 	go func() {
-		log.Printf("Server started on port %s", cfg.ServerPort)
+		log.Info("Server started", "port", cfg.ServerPort)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("Failed to start server: %v", err)
+			log.Error("Failed to start server", "error", err)
+			os.Exit(1)
 		}
 	}()
 
 	<-done
-	log.Println("Server is shutting down...")
+	log.Info("Server is shutting down...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatalf("Server shutdown failed: %v", err)
+		log.Error("Server shutdown faild", "error", err)
+		os.Exit(1)
 	}
 
-	log.Println("Server exitted properly")
+	log.Info("Server exitted properly")
 }
