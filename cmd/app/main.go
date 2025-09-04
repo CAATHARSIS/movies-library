@@ -41,7 +41,7 @@ func main() {
 
 	movieService := service.NewMovieService(movieRepo)
 
-	movieHandler := handlers.NewMovieHandler(*movieService)
+	movieHandler := handlers.NewMovieHandler(movieService, log)
 
 	router := mux.NewRouter()
 	router.Use(middleware.NewLoggingMiddleware(log))

@@ -10,15 +10,23 @@ import (
 	"github.com/CAATHARSIS/movies-library/internal/models"
 )
 
-type MoviePostgresRepo struct {
+type Repository interface {
+	Create(context.Context, *models.Movie) error
+	GetByID(context.Context, int) (*models.Movie, error)
+	Update(context.Context, *models.Movie) (*models.Movie, error)
+	Delete(context.Context, int) error
+	List(context.Context) ([]*models.Movie, error)
+}
+
+type moviePostgresRepo struct {
 	db *sql.DB
 }
 
-func NewMoviePostgresRepo(db *sql.DB) *MoviePostgresRepo {
-	return &MoviePostgresRepo{db}
+func NewMoviePostgresRepo(db *sql.DB) *moviePostgresRepo {
+	return &moviePostgresRepo{db}
 }
 
-func (r *MoviePostgresRepo) Create(ctx context.Context, movie *models.Movie) error {
+func (r *moviePostgresRepo) Create(ctx context.Context, movie *models.Movie) error {
 	qurery := `
 		INSERT INTO
 			movies (
@@ -55,7 +63,7 @@ func (r *MoviePostgresRepo) Create(ctx context.Context, movie *models.Movie) err
 	return nil
 }
 
-func (r *MoviePostgresRepo) GetByID(ctx context.Context, id int) (*models.Movie, error) {
+func (r *moviePostgresRepo) GetByID(ctx context.Context, id int) (*models.Movie, error) {
 	query := `
 		SELECT
 			id,
@@ -95,7 +103,7 @@ func (r *MoviePostgresRepo) GetByID(ctx context.Context, id int) (*models.Movie,
 	return &movie, nil
 }
 
-func (r *MoviePostgresRepo) Update(ctx context.Context, movie *models.Movie) (*models.Movie, error) {
+func (r *moviePostgresRepo) Update(ctx context.Context, movie *models.Movie) (*models.Movie, error) {
 	query := `
 		UPDATE
 			movies
@@ -118,8 +126,33 @@ func (r *MoviePostgresRepo) Update(ctx context.Context, movie *models.Movie) (*m
 			updated_at
 	`
 
+	oldMovie, err := r.GetByID(ctx, movie.ID)
+	if err != nil {
+		return nil, fmt.Errorf("invalid movie id: %v", err)
+	}
+
+	if movie.Title == "" {
+		movie.Title = oldMovie.Title
+	}
+
+	if movie.Director == "" {
+		movie.Director = oldMovie.Director
+	}
+
+	if movie.ReleaseDate.IsZero() {
+		movie.ReleaseDate = oldMovie.ReleaseDate
+	}
+
+	if movie.Genre == "" {
+		movie.Genre = oldMovie.Genre
+	}
+
+	if movie.Description == "" {
+		movie.Description = oldMovie.Description
+	}
+
 	var updatedMovie models.Movie
-	err := r.db.QueryRowContext(
+	err = r.db.QueryRowContext(
 		ctx,
 		query,
 		movie.Title,
@@ -147,7 +180,7 @@ func (r *MoviePostgresRepo) Update(ctx context.Context, movie *models.Movie) (*m
 	return &updatedMovie, nil
 }
 
-func (r *MoviePostgresRepo) Delete(ctx context.Context, id int) error {
+func (r *moviePostgresRepo) Delete(ctx context.Context, id int) error {
 	query := `
 		DELETE FROM movies
 		WHERE
@@ -163,7 +196,7 @@ func (r *MoviePostgresRepo) Delete(ctx context.Context, id int) error {
 	return nil
 }
 
-func (r *MoviePostgresRepo) List(ctx context.Context) ([]*models.Movie, error) {
+func (r *moviePostgresRepo) List(ctx context.Context) ([]*models.Movie, error) {
 	query := `
 		SELECT
 			ID,
