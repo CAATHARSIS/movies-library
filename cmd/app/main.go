@@ -31,13 +31,26 @@ func main() {
 		log.Info("debug messages are enabled")
 	}
 
-	db, err := database.NewPostgresDB(cfg)
+	migrationDB, err := database.NewPostgresDB(cfg)
 	if err != nil {
 		log.Error("Failed to connect to database", "error", err)
+		os.Exit(1)
 	}
-	defer db.Close()
+	defer migrationDB.Close()
 
-	movieRepo := movie.NewMoviePostgresRepo(db)
+	if err := database.RunMigrations(migrationDB, log); err != nil {
+		log.Error("Failed to run migrations", "error", err)
+		os.Exit(1)
+	}
+
+	appDB, err := database.NewPostgresDB(cfg)
+	if err != nil {
+		log.Error("Failed to connect to database", "error", err)
+		os.Exit(1)
+	}
+	defer migrationDB.Close()
+
+	movieRepo := movie.NewMoviePostgresRepo(appDB)
 
 	movieService := service.NewMovieService(movieRepo)
 
