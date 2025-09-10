@@ -29,7 +29,9 @@ services:
 
 volumes:
   postgres_data:
+    name: postgres_data
 
 networks:
   mvnet:
     driver: bridge
+    name: mvnet
