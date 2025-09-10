@@ -29,9 +29,7 @@ services:
 
 volumes:
   postgres_data:
-    external: true
 
 networks:
   mvnet:
-    external: true
     driver: bridge
