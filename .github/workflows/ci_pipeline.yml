@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  REGESTRY: docker.io
+  REGISTRY: docker.io
   IMAGE_NAME: murl0ck/movies-library
 
 jobs:
@@ -75,7 +75,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ env.REGESTRY }}/${{ env.IMAGE_NAME }}:latest
-            ${{ env.REGESTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-          cache-from: type=registry,ref=${{ env.REGESTRY }}/${{ env.IMAGE_NAME }}:buildcache
-          cache-to: type=registry,ref=$${{ env.REGESTRY }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
