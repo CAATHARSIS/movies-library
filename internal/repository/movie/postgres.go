@@ -11,7 +11,7 @@ import (
 	"github.com/CAATHARSIS/movies-library/internal/models"
 )
 
-// Repository interface describes functions which object must implements to communicate with db 
+// Repository interface describes functions which object must implements to communicate with db
 type Repository interface {
 	Create(context.Context, *models.Movie) error
 	GetByID(context.Context, int) (*models.Movie, error)
@@ -234,7 +234,7 @@ func (r *moviePostgresRepo) List(ctx context.Context) ([]*models.Movie, error) {
 			&movie.Title,
 			&movie.Director,
 			&movie.ReleaseDate,
-			&movie.Genre,  
+			&movie.Genre,
 			&movie.Description,
 			&movie.CreatedAt,
 			&movie.UpdatedAt,

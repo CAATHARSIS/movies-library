@@ -1,7 +1,7 @@
 version: "2"
 
 run:
-  timeout: 5ms
+  timeout: 5m
   modules-download-mode: readonly
 
 linters:
@@ -16,7 +16,7 @@ linters:
   disable:
     - errcheck
 
-formaters:
+formatters:
   enable:
     - gofmt
     - goimports

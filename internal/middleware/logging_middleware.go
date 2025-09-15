@@ -42,7 +42,7 @@ func NewLoggingMiddleware(log *slog.Logger) func(next http.Handler) http.Handler
 	)
 
 	log.Info("logger middleware is enabled")
-	
+
 	return func(next http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {
 			entry := log.With(
@@ -56,7 +56,7 @@ func NewLoggingMiddleware(log *slog.Logger) func(next http.Handler) http.Handler
 			ww := &responseWriteWrapper{
 				ResponseWriter: w,
 				statusCode:     http.StatusOK,
-			}		
+			}
 			t := time.Now()
 			defer func() {
 				entry.Info(
