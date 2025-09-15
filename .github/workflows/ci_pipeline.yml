@@ -78,4 +78,4 @@ jobs:
             ${{ env.REGESTRY }}/${{ env.IMAGE_NAME }}:latest
             ${{ env.REGESTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
           cache-from: type=registry,ref=${{ env.REGESTRY }}/${{ env.IMAGE_NAME }}:buildcache
-          cache-to: type=registryl,ref=$${{ env.REGESTRY }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
+          cache-to: type=registry,ref=$${{ env.REGESTRY }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
