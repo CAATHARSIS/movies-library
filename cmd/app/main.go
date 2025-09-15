@@ -36,19 +36,23 @@ func main() {
 		log.Error("Failed to connect to database", "error", err)
 		os.Exit(1)
 	}
-	defer migrationDB.Close()
 
 	if err := database.RunMigrations(migrationDB, log); err != nil {
 		log.Error("Failed to run migrations", "error", err)
+		if err := migrationDB.Close(); err != nil {
+			log.Error("Failed to close migration db", "error", err)
+		}
 		os.Exit(1)
 	}
-	
+
 	appDB, err := database.NewPostgresDB(cfg)
 	if err != nil {
 		log.Error("Failed to connect to database", "error", err)
+		if err := appDB.Close(); err != nil {
+			log.Error("Failed to close app db", "error", err)
+		}
 		os.Exit(1)
 	}
-	defer migrationDB.Close()
 
 	movieRepo := movie.NewMoviePostgresRepo(appDB)
 
@@ -72,6 +76,12 @@ func main() {
 		log.Info("Server started", "port", cfg.ServerPort)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Error("Failed to start server", "error", err)
+			if err := migrationDB.Close(); err != nil {
+				log.Error("Failed to close migration db", "error", err)
+			}
+			if err := appDB.Close(); err != nil {
+				log.Error("Failed to close app db", "error", err)
+			}
 			os.Exit(1)
 		}
 	}()
@@ -84,7 +94,20 @@ func main() {
 
 	if err := srv.Shutdown(ctx); err != nil {
 		log.Error("Server shutdown faild", "error", err)
-		os.Exit(1)
+		if err := migrationDB.Close(); err != nil {
+			log.Error("Failed to close migration db", "error", err)
+		}
+		if err := appDB.Close(); err != nil {
+			log.Error("Failed to close app db", "error", err)
+		}
+		return
+	}
+
+	if err := migrationDB.Close(); err != nil {
+		log.Error("Failed to close migration db", "error", err)
+	}
+	if err := appDB.Close(); err != nil {
+		log.Error("Failed to close app db", "error", err)
 	}
 
 	log.Info("Server exitted properly")

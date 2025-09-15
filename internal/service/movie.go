@@ -1,3 +1,4 @@
+// Package service provides communication between repository and handler
 package service
 
 import (
@@ -7,6 +8,7 @@ import (
 	"github.com/CAATHARSIS/movies-library/internal/repository/movie"
 )
 
+// MovieService interface describes structs that are used for creating handlers
 type MovieService interface {
 	CreateMovie(context.Context, *models.Movie) error
 	GetMovie(context.Context, int) (*models.Movie, error)
@@ -19,6 +21,7 @@ type movieService struct {
 	repo movie.Repository
 }
 
+// NewMovieService creates new instance of MovieService interface
 func NewMovieService(r movie.Repository) MovieService {
 	return &movieService{repo: r}
 }

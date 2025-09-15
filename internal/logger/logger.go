@@ -1,3 +1,4 @@
+// Package logger provides creating of logger depends on environment
 package logger
 
 import (
@@ -11,6 +12,7 @@ const (
 	envProd  = "prod"
 )
 
+// NewLogger function create new instance of custom logger
 func NewLogger(env string) *slog.Logger {
 	var log *slog.Logger
 

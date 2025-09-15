@@ -1,3 +1,4 @@
+// Package movie provides communication application with db
 package movie
 
 import (
@@ -10,6 +11,7 @@ import (
 	"github.com/CAATHARSIS/movies-library/internal/models"
 )
 
+// Repository interface describes functions which object must implements to communicate with db 
 type Repository interface {
 	Create(context.Context, *models.Movie) error
 	GetByID(context.Context, int) (*models.Movie, error)
@@ -22,7 +24,8 @@ type moviePostgresRepo struct {
 	db *sql.DB
 }
 
-func NewMoviePostgresRepo(db *sql.DB) *moviePostgresRepo {
+// NewMoviePostgresRepo creates new instance of moviePostgresRepo
+func NewMoviePostgresRepo(db *sql.DB) Repository {
 	return &moviePostgresRepo{db}
 }
 

@@ -1,3 +1,4 @@
+// Package database provides database connection
 package database
 
 import (
@@ -8,6 +9,7 @@ import (
 	"github.com/CAATHARSIS/movies-library/internal/config"
 )
 
+// NewPostgresDB creates new connection for db
 func NewPostgresDB(cfg *config.Config) (*sql.DB, error) {
 	conStr := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",

@@ -1,3 +1,4 @@
+// Package middleware provides logging
 package middleware
 
 import (
@@ -34,6 +35,7 @@ func (w *responseWriteWrapper) BytesWritten() int {
 	return w.bytesWritten
 }
 
+// NewLoggingMiddleware function provides logging in requests
 func NewLoggingMiddleware(log *slog.Logger) func(next http.Handler) http.Handler {
 	log.With(
 		slog.String("component", "middleware/logger"),

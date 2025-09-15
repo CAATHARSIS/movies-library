@@ -2,6 +2,7 @@ package config
 
 import "os"
 
+// Config holds settings of application
 type Config struct {
 	DBHost     string
 	DBPort     string

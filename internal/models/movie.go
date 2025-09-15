@@ -1,7 +1,9 @@
+// Package models describes models which are using in application logic
 package models
 
 import "time"
 
+// Movie struct describes relation in db
 type Movie struct {
 	ID int `json:"id"`
 	Title string `json:"title"`
