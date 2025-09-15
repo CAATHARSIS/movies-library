@@ -94,10 +94,10 @@ func TestMovieHandler_GetMovie_Succes(t *testing.T) {
 	handler := NewMovieHandler(mockService, logger)
 
 	testMovie := &models.Movie{
-		Title: "Exsisting Movie",
-		Director: "Test Director",
+		Title:       "Exsisting Movie",
+		Director:    "Test Director",
 		ReleaseDate: time.Now(),
-		Genre: "Test Genre",
+		Genre:       "Test Genre",
 	}
 
 	mockService.AddTestMovies(testMovie)
@@ -168,16 +168,16 @@ func TestMovieHandler_UpdateMovie_Partial(t *testing.T) {
 	handler := NewMovieHandler(mockService, logger)
 
 	initialMovie := &models.Movie{
-		Title: "Original Title",
-		Director: "Original Director",
+		Title:       "Original Title",
+		Director:    "Original Director",
 		ReleaseDate: time.Now(),
-		Genre: "Original Genre",
+		Genre:       "Original Genre",
 		Description: "Original Description",
 	}
 
 	mockService.AddTestMovies(initialMovie)
 
-	updateData := map[string]interface{} {
+	updateData := map[string]interface{}{
 		"Title": "Only new title",
 	}
 
@@ -249,8 +249,8 @@ func TestMovieHandler_ListMovies_Succes(t *testing.T) {
 	handler := NewMovieHandler(mockService, logger)
 
 	initialMovies := []*models.Movie{
-		&models.Movie{Title: "Title 1"},
-		&models.Movie{Title: "Title 2"},
+		{Title: "Title 1"},
+		{Title: "Title 2"},
 	}
 
 	mockService.AddTestMovies(initialMovies...)

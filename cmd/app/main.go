@@ -42,7 +42,7 @@ func main() {
 		log.Error("Failed to run migrations", "error", err)
 		os.Exit(1)
 	}
-
+	
 	appDB, err := database.NewPostgresDB(cfg)
 	if err != nil {
 		log.Error("Failed to connect to database", "error", err)
